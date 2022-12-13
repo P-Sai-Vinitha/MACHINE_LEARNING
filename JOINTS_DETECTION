@@ -1,0 +1,79 @@
+import cv2
+import numpy as np
+import os
+from matplotlib import pyplot as plt
+import time
+import mediapipe as mp
+
+mp_holistic=mp.solutions.holistic
+mp_drawing=mp.solutions.drawing_utils
+
+def mediapipe_detection(image,model):
+    image=cv2.cvtColor(image,cv2.COLOR_BGR2RGB)#COLOR CONVERSION BGR 2 RGB
+    image.flags.writeable=False                 #image no longer writable
+    results=model.process(image)         #make prediction
+    image.flags.writeable=True                  #image is now writable
+    image=cv2.cvtColor(image,cv2.COLOR_RGB2BGR)#COLOR CONVERSION RGB 2 BGR
+    return image,results
+  
+cv2.cvtColor??
+
+def draw_landmarks(image, results):
+    mp_drawing.draw_landmarks(image, results.face_landmarks,mp_holistic.FACEMESH_TESSELATION) #draw face connections
+    mp_drawing.draw_landmarks(image, results.pose_landmarks,mp_holistic.POSE_CONNECTIONS) #draw pose connections
+    mp_drawing.draw_landmarks(image, results.left_hand_landmarks,mp_holistic.HAND_CONNECTIONS)#draw hand connections
+    mp_drawing.draw_landmarks(image, results.right_hand_landmarks,mp_holistic.HAND_CONNECTIONS)#draw right hand connections
+    
+mp_holistic.POSE_CONNECTIONS #connection map
+
+mp_drawing.draw_landmarks??
+
+cap=cv2.VideoCapture(0)
+#set mediapipe model
+with mp_holistic.Holistic(min_detection_confidence=0.5,min_tracking_confidence=0.5)as holistic:
+    while cap.isOpened():
+        
+        #read feed
+        ret,frame=cap.read()
+        #make detections
+        image,results= mediapipe_detection(frame, holistic)
+        print(results)
+        
+        #draw landmarks
+        draw_landmarks(image,results)
+        
+    
+        #show to screen
+        cv2.imshow('OpenCV Feed',image)
+         #break gracefully
+        if cv2.waitKey(10)& 0xFF == ord('a'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    
+    
+len(results.left_hand_landmarks.landmark)
+
+
+frame #last one dected from webcam
+
+
+plt.imshow(frame)  #show image which webcam detected last
+
+plt.imshow(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
+
+results
+
+draw_landmarks(frame,results)
+
+
+plt.imshow(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)) #landmarks(joints)
+
+
+
+
+
+ 
+    
+   
